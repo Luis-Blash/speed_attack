@@ -6,8 +6,8 @@ extends CharacterBody3D
 func get_input_direction() -> Vector3:
 	var input := Vector2.ZERO
 	
-	input.x = Input.get_axis("ui_left", "ui_right")
-	input.y = Input.get_axis("ui_up", "ui_down")
+	input.x = Input.get_axis("move_left","move_right")
+	input.y = Input.get_axis("move_up", "move_down")
 	
 	if input.length() > 1.0:
 		input = input.normalized()
