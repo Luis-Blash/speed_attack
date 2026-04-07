@@ -1,0 +1,27 @@
+[gd_scene format=3 uid="uid://cnowqwynmeine"]
+
+[ext_resource type="Script" uid="uid://dpvscne4xjaho" path="res://shuriken.gd" id="1_foqx7"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_bd2gl"]
+radius = 0.15
+
+[sub_resource type="SphereMesh" id="SphereMesh_foqx7"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_foqx7"]
+radius = 0.2
+
+[node name="Shuriken" type="RigidBody3D" unique_id=1899499416]
+transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0, 0, 0)
+script = ExtResource("1_foqx7")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1571086075]
+shape = SubResource("SphereShape3D_bd2gl")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=528607895]
+mesh = SubResource("SphereMesh_foqx7")
+
+[node name="Area3D" type="Area3D" parent="." unique_id=1763722192]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D" unique_id=904414800]
+shape = SubResource("SphereShape3D_foqx7")
+debug_color = Color(0.93112403, 0.25626117, 0.15692621, 0.41960785)

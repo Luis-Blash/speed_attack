@@ -17,6 +17,8 @@ var attack_timer: float = 0.0
 @onready var attack_area: Area3D = $AttackArea
 @export var spawn_point: Marker3D
 @export var camera: Camera3D
+@export var shuriken_scene: PackedScene
+
 
 func _ready() -> void:
 	attack_area.monitoring = false
@@ -49,6 +51,10 @@ func _handle_global_input() -> void:
 	
 	if Input.is_action_just_pressed("attack_1"):
 		_start_attack()
+		
+	# lanzar shuriken
+	if Input.is_action_just_pressed("throw"):
+		_throw_shuriken()
 
 func _state_idle() -> void:
 	velocity.x = 0
@@ -101,6 +107,14 @@ func get_input_direction() -> Vector3:
 		0,
 		-input.x * sin(angle) + input.y * cos(angle)
 	)
+	
+func _throw_shuriken() -> void:
+	if not shuriken_scene:
+		return
+	var shuriken = shuriken_scene.instantiate()
+	get_tree().root.add_child(shuriken)
+	shuriken.global_position = global_position + (-global_transform.basis.z * 1.5) + Vector3(0, 0.5, 0)
+	shuriken.direction = -global_transform.basis.z
 
 func _start_attack() -> void:
 	current_state = State.ATTACK

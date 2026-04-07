@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://dl44ir6fhdt7a" path="res://camera.gd" id="1_0xm2m"]
 [ext_resource type="Script" uid="uid://cg7l0k4p70v2a" path="res://player.gd" id="1_ig7tw"]
+[ext_resource type="PackedScene" uid="uid://cnowqwynmeine" path="res://shuriken.tscn" id="3_1bvp3"]
 [ext_resource type="Script" uid="uid://cn0tdoaet381v" path="res://enemy.gd" id="3_h2yge"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_7dm0k"]
@@ -58,7 +59,7 @@ shadow_enabled = true
 
 [node name="SpawnPoint" type="Marker3D" parent="." unique_id=236439115]
 
-[node name="nivel1" type="CSGCombiner3D" parent="." unique_id=994892580]
+[node name="nivel1" type="CSGCombiner3D" parent="." unique_id=994892580 groups=["wall"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2, 0)
 material_overlay = SubResource("StandardMaterial3D_lquwl")
 use_collision = true
@@ -112,6 +113,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.6566477, 0, 0)
 script = ExtResource("1_ig7tw")
 spawn_point = NodePath("../SpawnPoint")
 camera = NodePath("../Camera3D")
+shuriken_scene = ExtResource("3_1bvp3")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Player" unique_id=1812737495]
 shape = SubResource("CapsuleShape3D_7dm0k")
