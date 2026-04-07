@@ -2,8 +2,9 @@ extends CharacterBody3D
 
 # --- configuración ---
 @export var speed: float = 8.0
-@export var gravity: float = 20.0
+@export var gravity: float = 60.0
 @export var attack_duration: float = 0.15
+@export var jump_force: float = 15.0
 
 # --- state machine ---
 enum State { IDLE, MOVE, ATTACK, DEAD }
@@ -23,6 +24,8 @@ func _physics_process(delta: float) -> void:
 	# gravedad siempre activa sin importar el estado
 	if not is_on_floor():
 		velocity.y -= gravity * delta
+		
+	_handle_global_input()
 	
 	match current_state:
 		State.IDLE:
@@ -37,35 +40,34 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 
 # --- estados ---
+
+func _handle_global_input() -> void:
+	if current_state == State.ATTACK or current_state == State.DEAD:
+		return
+	
+	# salto
+	if Input.is_action_just_pressed("jump") and is_on_floor():
+		velocity.y = jump_force
+	
+	# ataque
+	if Input.is_action_just_pressed("attack_1"):
+		_start_attack()
+	
 func _state_idle() -> void:
 	velocity.x = 0
 	velocity.z = 0
-	
-	# transición a MOVE
 	if get_input_direction().length() > 0.1:
 		current_state = State.MOVE
-	
-	# transición a ATTACK
-	if Input.is_action_just_pressed("attack_1"):
-		_start_attack()
 
 func _state_move() -> void:
 	var direction := get_input_direction()
 	velocity.x = direction.x * speed
 	velocity.z = direction.z * speed
-	
-	# rotar hacia donde se mueve
 	if direction.length() > 0.1:
 		var target_angle := atan2(-direction.x, -direction.z)
 		rotation.y = lerp_angle(rotation.y, target_angle, 0.15)
-	
-	# transición a IDLE
 	if direction.length() < 0.1:
 		current_state = State.IDLE
-	
-	# transición a ATTACK
-	if Input.is_action_just_pressed("attack_1"):
-		_start_attack()
 
 func _state_attack(delta: float) -> void:
 	# durante el ataque no se mueve
@@ -78,7 +80,6 @@ func _state_attack(delta: float) -> void:
 		current_state = State.IDLE
 
 func _state_dead() -> void:
-	# sin input, sin movimiento
 	velocity.x = 0
 	velocity.z = 0
 
