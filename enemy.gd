@@ -99,3 +99,6 @@ func _on_vision_exited(body: Node3D) -> void:
 	if body.is_in_group("player"):
 		player = null
 		current_state = State.IDLE
+
+func die() -> void:
+	queue_free()
