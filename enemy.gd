@@ -13,6 +13,7 @@ var player: CharacterBody3D = null
 # --- referencias ---
 @onready var vision_area: Area3D = $VisionArea
 @onready var raycast: RayCast3D = $RayCast3D
+@onready var attack_area: Area3D = $AttackArea
 
 # --- gravedad ---
 var gravity: float = 20.0
@@ -20,6 +21,8 @@ var gravity: float = 20.0
 func _ready() -> void:
 	vision_area.body_entered.connect(_on_vision_entered)
 	vision_area.body_exited.connect(_on_vision_exited)
+	attack_area.body_entered.connect(_on_attack_hit)
+
 
 func _physics_process(delta: float) -> void:
 	# aplicar gravedad
@@ -52,6 +55,10 @@ func _state_chase(delta: float) -> void:
 	var distance := direction.length()
 	direction = direction.normalized()
 	
+	# siempre rota hacia el jugador aunque haya pared
+	var target_basis := Basis.looking_at(direction, Vector3.UP)
+	global_transform.basis = global_transform.basis.slerp(target_basis, 0.1)
+	
 	# solo se mueve si está lejos del jugador
 	if distance > stop_distance:
 		velocity.x = direction.x * speed
@@ -59,11 +66,6 @@ func _state_chase(delta: float) -> void:
 	else:
 		velocity.x = 0
 		velocity.z = 0
-	
-	# rotación suave hacia el jugador
-	var target_basis := Basis.looking_at(direction, Vector3.UP)
-	#0.05 → muy lento 0.1 → suave 0.3 → rápido
-	global_transform.basis = global_transform.basis.slerp(target_basis, 0.1)
 	
 	# si pierde visión vuelve a idle
 	if not _can_see_player():
@@ -99,6 +101,10 @@ func _on_vision_exited(body: Node3D) -> void:
 	if body.is_in_group("player"):
 		player = null
 		current_state = State.IDLE
+		
+func _on_attack_hit(body: Node3D) -> void:
+	if body.is_in_group("player"):
+		body.die()
 
 func die() -> void:
 	queue_free()

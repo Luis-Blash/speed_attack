@@ -15,13 +15,14 @@ var attack_timer: float = 0.0
 
 # --- referencias ---
 @onready var attack_area: Area3D = $AttackArea
+@export var spawn_point: Marker3D
+@export var camera: Camera3D
 
 func _ready() -> void:
 	attack_area.monitoring = false
 	attack_area.body_entered.connect(_on_attack_hit)
 
 func _physics_process(delta: float) -> void:
-	# gravedad siempre activa sin importar el estado
 	if not is_on_floor():
 		velocity.y -= gravity * delta
 		
@@ -39,20 +40,16 @@ func _physics_process(delta: float) -> void:
 	
 	move_and_slide()
 
-# --- estados ---
-
 func _handle_global_input() -> void:
 	if current_state == State.ATTACK or current_state == State.DEAD:
 		return
 	
-	# salto
 	if Input.is_action_just_pressed("jump") and is_on_floor():
 		velocity.y = jump_force
 	
-	# ataque
 	if Input.is_action_just_pressed("attack_1"):
 		_start_attack()
-	
+
 func _state_idle() -> void:
 	velocity.x = 0
 	velocity.z = 0
@@ -63,17 +60,17 @@ func _state_move() -> void:
 	var direction := get_input_direction()
 	velocity.x = direction.x * speed
 	velocity.z = direction.z * speed
+	
 	if direction.length() > 0.1:
 		var target_angle := atan2(-direction.x, -direction.z)
 		rotation.y = lerp_angle(rotation.y, target_angle, 0.15)
+	
 	if direction.length() < 0.1:
 		current_state = State.IDLE
 
 func _state_attack(delta: float) -> void:
-	# durante el ataque no se mueve
 	velocity.x = 0
 	velocity.z = 0
-	
 	attack_timer -= delta
 	if attack_timer <= 0.0:
 		attack_area.monitoring = false
@@ -92,7 +89,18 @@ func get_input_direction() -> Vector3:
 	if input.length() > 1.0:
 		input = input.normalized()
 	
-	return Vector3(input.x, 0, input.y)
+	# si no hay cámara, movimiento normal
+	if not camera:
+		return Vector3(input.x, 0, input.y)
+	
+	# rotar input según ángulo actual de la cámara
+	var angle := deg_to_rad(-camera.current_angle_deg)
+	
+	return Vector3(
+		input.x * cos(angle) + input.y * sin(angle),
+		0,
+		-input.x * sin(angle) + input.y * cos(angle)
+	)
 
 func _start_attack() -> void:
 	current_state = State.ATTACK
@@ -101,6 +109,10 @@ func _start_attack() -> void:
 
 func die() -> void:
 	current_state = State.DEAD
+	global_position = spawn_point.global_position
+	velocity = Vector3.ZERO
+	await get_tree().create_timer(0.5).timeout
+	current_state = State.IDLE
 
 # --- señales ---
 func _on_attack_hit(body: Node3D) -> void:
