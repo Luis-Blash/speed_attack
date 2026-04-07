@@ -3,6 +3,7 @@ extends CharacterBody3D
 # --- configuración ---
 @export var speed: float = 4.0
 @export var vision_angle: float = 60.0
+@export var stop_distance: float = 2.0 
 
 # --- estado ---
 enum State { IDLE, CHASE }
@@ -48,14 +49,20 @@ func _state_chase(delta: float) -> void:
 	# moverse hacia el jugador
 	var direction := (player.global_position - global_position)
 	direction.y = 0
+	var distance := direction.length()
 	direction = direction.normalized()
 	
-	velocity.x = direction.x * speed
-	velocity.z = direction.z * speed
+	# solo se mueve si está lejos del jugador
+	if distance > stop_distance:
+		velocity.x = direction.x * speed
+		velocity.z = direction.z * speed
+	else:
+		velocity.x = 0
+		velocity.z = 0
 	
 	# rotación suave hacia el jugador
 	var target_basis := Basis.looking_at(direction, Vector3.UP)
-	#0.05 → muy lento, casi cinematográfico, 0.1 → suave pero responsivo, 0.3 → rápido pero sin brusquedad
+	#0.05 → muy lento 0.1 → suave 0.3 → rápido
 	global_transform.basis = global_transform.basis.slerp(target_basis, 0.1)
 	
 	# si pierde visión vuelve a idle
