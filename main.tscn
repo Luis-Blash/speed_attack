@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://dl44ir6fhdt7a" path="res://camera.gd" id="1_0xm2m"]
 [ext_resource type="Script" uid="uid://cg7l0k4p70v2a" path="res://player.gd" id="1_ig7tw"]
+[ext_resource type="Script" uid="uid://cn0tdoaet381v" path="res://enemy.gd" id="3_h2yge"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_7dm0k"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -22,6 +23,20 @@ glow_enabled = true
 
 [sub_resource type="BoxMesh" id="BoxMesh_ig7tw"]
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lquwl"]
+albedo_color = Color(0.1148968, 0.11489681, 0.1148968, 1)
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_0xm2m"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0xm2m"]
+albedo_color = Color(0.8283502, 0.10899695, 0.1412035, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_h2yge"]
+albedo_color = Color(0.7504365, 0.21343419, 0.10951956, 1)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_0xm2m"]
+radius = 5.029
+
 [node name="Main" type="Node3D" unique_id=931613299]
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=1429655221 node_paths=PackedStringArray("target")]
@@ -36,10 +51,10 @@ environment = SubResource("Environment_0xm2m")
 transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
 shadow_enabled = true
 
-[node name="Player" type="CharacterBody3D" parent="." unique_id=1040943630]
+[node name="Player" type="CharacterBody3D" parent="." unique_id=1040943630 groups=["player"]]
 script = ExtResource("1_ig7tw")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Player" unique_id=1812737495 groups=["player"]]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Player" unique_id=1812737495]
 shape = SubResource("CapsuleShape3D_7dm0k")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Player" unique_id=1752652950]
@@ -50,8 +65,57 @@ transform = Transform3D(1, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0.36574686, -0.3936116
 mesh = SubResource("BoxMesh_ig7tw")
 
 [node name="nivel1" type="CSGCombiner3D" parent="." unique_id=994892580]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2, 0)
+material_overlay = SubResource("StandardMaterial3D_lquwl")
 use_collision = true
 
 [node name="CSGBox3D" type="CSGBox3D" parent="nivel1" unique_id=2040151556]
-transform = Transform3D(30, 0, 0, 0, 1, 0, 0, 0, 30, 0, -1.5500393, 0)
+transform = Transform3D(30, 0, 0, 0, 1, 0, 0, 0, 30, 0, 0, 0)
 use_collision = true
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="nivel1" unique_id=2092035016]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.460037, 1.9732056, -6.6213493)
+size = Vector3(1, 4.946411, 18.516895)
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="nivel1" unique_id=400273742]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.057497, 1.9732056, 8.730309)
+size = Vector3(1, 4.946411, 8.215222)
+
+[node name="CSGBox3D4" type="CSGBox3D" parent="nivel1" unique_id=1157046329]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 5.3171353)
+size = Vector3(1, 5, 1)
+
+[node name="CSGBox3D5" type="CSGBox3D" parent="nivel1" unique_id=541826821]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.0950556, 2, 5.3171353)
+size = Vector3(1, 5, 1)
+
+[node name="CSGBox3D6" type="CSGBox3D" parent="nivel1" unique_id=957611968]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.0903378, 2, -2.6456466)
+size = Vector3(1, 5, 1)
+
+[node name="Enemy" type="CharacterBody3D" parent="." unique_id=1275947369 groups=["enemy"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -6.587395)
+script = ExtResource("3_h2yge")
+
+[node name="CapsuleShape3D" type="CollisionShape3D" parent="Enemy" unique_id=1605299315]
+shape = SubResource("CapsuleShape3D_0xm2m")
+
+[node name="CapsuleMesh" type="MeshInstance3D" parent="Enemy" unique_id=1710911497]
+material_overlay = SubResource("StandardMaterial3D_0xm2m")
+mesh = SubResource("CapsuleMesh_7dm0k")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Enemy/CapsuleMesh" unique_id=1794974696]
+transform = Transform3D(1, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0.36574686, -0.3936116)
+material_overlay = SubResource("StandardMaterial3D_h2yge")
+mesh = SubResource("BoxMesh_ig7tw")
+
+[node name="RayCast3D" type="RayCast3D" parent="Enemy" unique_id=1803215551]
+target_position = Vector3(0, 0, -6)
+
+[node name="VisionArea" type="Area3D" parent="Enemy" unique_id=147190357]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -3)
+collision_layer = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Enemy/VisionArea" unique_id=789490967]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.6487865)
+shape = SubResource("SphereShape3D_0xm2m")
