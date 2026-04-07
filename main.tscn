@@ -17,6 +17,9 @@ sky = SubResource("Sky_ig7tw")
 tonemap_mode = 2
 glow_enabled = true
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lquwl"]
+albedo_color = Color(0.1148968, 0.11489681, 0.1148968, 1)
+
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_7dm0k"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_7dm0k"]
@@ -24,9 +27,6 @@ glow_enabled = true
 [sub_resource type="BoxMesh" id="BoxMesh_ig7tw"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_h2yge"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lquwl"]
-albedo_color = Color(0.1148968, 0.11489681, 0.1148968, 1)
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_0xm2m"]
 
@@ -53,6 +53,55 @@ environment = SubResource("Environment_0xm2m")
 transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
 shadow_enabled = true
 
+[node name="nivel1" type="CSGCombiner3D" parent="." unique_id=994892580]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2, 0)
+material_overlay = SubResource("StandardMaterial3D_lquwl")
+use_collision = true
+
+[node name="CSGBox3D" type="CSGBox3D" parent="nivel1" unique_id=2040151556]
+transform = Transform3D(30, 0, 0, 0, 1, 0, 0, 0, 30, 0, 0, -17.904766)
+use_collision = true
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="nivel1" unique_id=2092035016]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.460037, 2.5, -10.462902)
+size = Vector3(1, 6, 27)
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="nivel1" unique_id=400273742]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.47790718, 2.5, -3.6698642)
+size = Vector3(16, 6, 2)
+
+[node name="CSGBox3D" type="CSGBox3D" parent="nivel1/CSGBox3D3" unique_id=1138358872]
+operation = 2
+size = Vector3(3, 5, 3)
+
+[node name="CSGBox3D4" type="CSGBox3D" parent="nivel1" unique_id=1157046329]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5, 2.5, -12.6660385)
+size = Vector3(8, 6, 1)
+
+[node name="CSGBox3D5" type="CSGBox3D" parent="nivel1" unique_id=541826821]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.39869595, 2.5, 3.3171353)
+size = Vector3(17, 6, 1)
+
+[node name="CSGBox3D6" type="CSGBox3D" parent="nivel1" unique_id=957611968]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.0903378, 3, -16.03645)
+size = Vector3(1, 7, 5)
+
+[node name="CSGBox3D7" type="CSGBox3D" parent="nivel1" unique_id=1014380776]
+size = Vector3(16, 1, 6)
+
+[node name="CSGBox3D8" type="CSGBox3D" parent="nivel1" unique_id=1452367929]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.539963, 2.5, -10.462902)
+size = Vector3(1, 6, 27)
+
+[node name="CSGBox3D9" type="CSGBox3D" parent="nivel1" unique_id=1459188900]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.046234, 1.6, -18)
+size = Vector3(8, 2, 1)
+
+[node name="techo" type="CSGBox3D" parent="nivel1" unique_id=480115875]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 5, -16)
+visible = false
+size = Vector3(16, 1, 25)
+
 [node name="Player" type="CharacterBody3D" parent="." unique_id=1040943630 groups=["player"]]
 script = ExtResource("1_ig7tw")
 
@@ -73,37 +122,8 @@ monitoring = false
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Player/AttackArea" unique_id=159826849]
 shape = SubResource("BoxShape3D_h2yge")
 
-[node name="nivel1" type="CSGCombiner3D" parent="." unique_id=994892580]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2, 0)
-material_overlay = SubResource("StandardMaterial3D_lquwl")
-use_collision = true
-
-[node name="CSGBox3D" type="CSGBox3D" parent="nivel1" unique_id=2040151556]
-transform = Transform3D(30, 0, 0, 0, 1, 0, 0, 0, 30, 0, 0, 0)
-use_collision = true
-
-[node name="CSGBox3D2" type="CSGBox3D" parent="nivel1" unique_id=2092035016]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.460037, 1.9732056, -6.6213493)
-size = Vector3(1, 4.946411, 18.516895)
-
-[node name="CSGBox3D3" type="CSGBox3D" parent="nivel1" unique_id=400273742]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.057497, 1.9732056, 8.730309)
-size = Vector3(1, 4.946411, 8.215222)
-
-[node name="CSGBox3D4" type="CSGBox3D" parent="nivel1" unique_id=1157046329]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 5.3171353)
-size = Vector3(1, 5, 1)
-
-[node name="CSGBox3D5" type="CSGBox3D" parent="nivel1" unique_id=541826821]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.0950556, 2, 5.3171353)
-size = Vector3(1, 5, 1)
-
-[node name="CSGBox3D6" type="CSGBox3D" parent="nivel1" unique_id=957611968]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.0903378, 2, -2.6456466)
-size = Vector3(1, 5, 1)
-
 [node name="Enemy" type="CharacterBody3D" parent="." unique_id=1275947369 groups=["enemy"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -6.587395)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -22.388931)
 script = ExtResource("3_h2yge")
 
 [node name="CapsuleShape3D" type="CollisionShape3D" parent="Enemy" unique_id=1605299315]
