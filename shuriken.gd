@@ -5,6 +5,8 @@ extends RigidBody3D
 
 @onready var area: Area3D = $Area3D
 
+const WALL_GROUPS = ["wall", "wall_jump"]
+
 var direction: Vector3 = Vector3.ZERO
 
 func _ready() -> void:
@@ -19,5 +21,5 @@ func _on_hit(body: Node3D) -> void:
 		body.die()
 		queue_free()
 		
-	elif body.is_in_group("wall"):
+	elif WALL_GROUPS.any(func(g): return body.is_in_group(g)):
 		queue_free()
