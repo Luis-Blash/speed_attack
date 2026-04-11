@@ -13,8 +13,16 @@ var wall_normal: Vector3 = Vector3.ZERO
 var is_on_wall: bool = false
 var can_wall_slide: bool = true
 
+# --- dash ---
+@export var dash_force: float = 30.0
+@export var dash_duration: float = 0.1
+@export var dash_cooldown: float = 0.4
+var dash_timer: float = 0.0
+var dash_cooldown_timer: float = 0.0
+var dash_direction: Vector3 = Vector3.ZERO
+
 # --- state machine ---
-enum State { IDLE, MOVE, ATTACK, WALL_SLIDE, DEAD }
+enum State { IDLE, MOVE, ATTACK, WALL_SLIDE, DASH, DEAD }
 var current_state: State = State.IDLE
 
 # --- ataque ---
@@ -34,6 +42,7 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	_check_walls()
 	_gravity_to_state(delta)
+	_update_timers(delta)
 	_handle_global_input()
 	
 	match current_state:
@@ -45,6 +54,8 @@ func _physics_process(delta: float) -> void:
 			_state_attack(delta)
 		State.WALL_SLIDE:
 			_state_wall_slide()
+		State.DASH:
+			_state_dash(delta)
 		State.DEAD:
 			_state_dead()
 	
@@ -67,6 +78,9 @@ func _handle_global_input() -> void:
 	
 	if Input.is_action_just_pressed("throw"):
 		_throw_shuriken()
+		
+	if Input.is_action_just_pressed("dash") and dash_cooldown_timer <= 0.0:
+		_start_dash()
 
 # --- estados ---
 func _state_idle() -> void:
@@ -127,6 +141,29 @@ func _state_attack(delta: float) -> void:
 	if attack_timer <= 0.0:
 		attack_area.monitoring = false
 		current_state = State.IDLE
+
+func _start_dash() -> void:
+	# si hay input dashea hacia ese lado, si no hacia donde mira
+	var dir := get_input_direction()
+	if dir.length() < 0.1:
+		dir = -global_transform.basis.z
+	dash_direction = dir.normalized()
+	dash_timer = dash_duration
+	dash_cooldown_timer = dash_cooldown
+	current_state = State.DASH
+
+func _state_dash(delta: float) -> void:
+	dash_timer -= delta
+	velocity.x = dash_direction.x * dash_force
+	velocity.z = dash_direction.z * dash_force
+	velocity.y = 0.0  # dash horizontal puro, sin gravedad
+	
+	if dash_timer <= 0.0:
+		current_state = State.IDLE
+
+func _update_timers(delta: float) -> void:
+	if dash_cooldown_timer > 0.0:
+		dash_cooldown_timer -= delta
 
 func _state_dead() -> void:
 	velocity.x = 0
