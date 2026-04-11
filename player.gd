@@ -5,9 +5,16 @@ extends CharacterBody3D
 @export var gravity: float = 60.0
 @export var attack_duration: float = 0.15
 @export var jump_force: float = 15.0
+@export var wall_jump_force: float = 12.0
+@export var wall_slide_gravity: float = 0.5
+
+# --- estado de pared ---
+var wall_normal: Vector3 = Vector3.ZERO
+var is_on_wall: bool = false
+var can_wall_slide: bool = true
 
 # --- state machine ---
-enum State { IDLE, MOVE, ATTACK, DEAD }
+enum State { IDLE, MOVE, ATTACK, WALL_SLIDE, DEAD }
 var current_state: State = State.IDLE
 
 # --- ataque ---
@@ -15,19 +22,18 @@ var attack_timer: float = 0.0
 
 # --- referencias ---
 @onready var attack_area: Area3D = $AttackArea
+@onready var shape_cast: ShapeCast3D = $ShapeCast3D
 @export var spawn_point: Marker3D
 @export var camera: Camera3D
 @export var shuriken_scene: PackedScene
-
 
 func _ready() -> void:
 	attack_area.monitoring = false
 	attack_area.body_entered.connect(_on_attack_hit)
 
 func _physics_process(delta: float) -> void:
-	if not is_on_floor():
-		velocity.y -= gravity * delta
-		
+	_check_walls()
+	_gravity_to_state(delta)
 	_handle_global_input()
 	
 	match current_state:
@@ -37,6 +43,8 @@ func _physics_process(delta: float) -> void:
 			_state_move()
 		State.ATTACK:
 			_state_attack(delta)
+		State.WALL_SLIDE:
+			_state_wall_slide()
 		State.DEAD:
 			_state_dead()
 	
@@ -46,21 +54,28 @@ func _handle_global_input() -> void:
 	if current_state == State.ATTACK or current_state == State.DEAD:
 		return
 	
+	# salto normal desde el piso
 	if Input.is_action_just_pressed("jump") and is_on_floor():
 		velocity.y = jump_force
 	
+	# salto desde pared — solo con just_pressed, nunca con is_pressed
+	if Input.is_action_just_pressed("jump") and current_state == State.WALL_SLIDE:
+		_wall_jump()
+	
 	if Input.is_action_just_pressed("attack_1"):
 		_start_attack()
-		
-	# lanzar shuriken
+	
 	if Input.is_action_just_pressed("throw"):
 		_throw_shuriken()
 
+# --- estados ---
 func _state_idle() -> void:
 	velocity.x = 0
 	velocity.z = 0
 	if get_input_direction().length() > 0.1:
 		current_state = State.MOVE
+	if is_on_wall and not is_on_floor():
+		current_state = State.WALL_SLIDE
 
 func _state_move() -> void:
 	var direction := get_input_direction()
@@ -72,6 +87,37 @@ func _state_move() -> void:
 		rotation.y = lerp_angle(rotation.y, target_angle, 0.15)
 	
 	if direction.length() < 0.1:
+		current_state = State.IDLE
+	
+	if is_on_wall and not is_on_floor():
+		current_state = State.WALL_SLIDE
+
+func _state_wall_slide() -> void:
+	velocity.x = 0
+	velocity.z = 0
+	
+	if velocity.y > 0:
+		velocity.y = 0
+	
+	# rotar según input o hacia afuera de la pared
+	var input_dir := get_input_direction()
+	input_dir.y = 0
+	
+	var look_dir: Vector3
+	if input_dir.length() > 0.1:
+		look_dir = input_dir
+	else:
+		look_dir = -wall_normal
+		look_dir.y = 0
+	
+	if look_dir.length() > 0.1:
+		var target_angle := atan2(-look_dir.x, -look_dir.z)
+		rotation.y = lerp_angle(rotation.y, target_angle, 0.2)
+	
+	if is_on_floor():
+		current_state = State.IDLE
+	
+	if not is_on_wall:
 		current_state = State.IDLE
 
 func _state_attack(delta: float) -> void:
@@ -95,19 +141,60 @@ func get_input_direction() -> Vector3:
 	if input.length() > 1.0:
 		input = input.normalized()
 	
-	# si no hay cámara, movimiento normal
 	if not camera:
 		return Vector3(input.x, 0, input.y)
 	
-	# rotar input según ángulo actual de la cámara
 	var angle := deg_to_rad(-camera.current_angle_deg)
-	
 	return Vector3(
 		input.x * cos(angle) + input.y * sin(angle),
 		0,
 		-input.x * sin(angle) + input.y * cos(angle)
 	)
+
+func _check_walls() -> void:
+	is_on_wall = false
+	wall_normal = Vector3.ZERO
 	
+	# resetear can_wall_slide al tocar el suelo
+	if is_on_floor():
+		can_wall_slide = true
+		return
+		
+	if not can_wall_slide:
+		return
+	
+	for i in shape_cast.get_collision_count():
+		var collider = shape_cast.get_collider(i)
+		if collider.is_in_group("wall_jump"):
+			wall_normal += shape_cast.get_collision_normal(i)
+			is_on_wall = true
+
+func _wall_jump() -> void:
+	var input_dir := get_input_direction()
+	input_dir.y = 0
+	var toward_wall := input_dir.dot(-wall_normal)
+	var jump_dir := input_dir - (-wall_normal * toward_wall)
+	
+	can_wall_slide = false
+	is_on_wall = false
+	current_state = State.MOVE
+	
+	if jump_dir.length() > 0.1:
+		jump_dir = jump_dir.normalized()
+		velocity.x = jump_dir.x * wall_jump_force
+		velocity.z = jump_dir.z * wall_jump_force
+		velocity.y = wall_jump_force
+	else:
+		velocity.x = wall_normal.x * 8.0
+		velocity.z = wall_normal.z * 8.0
+		velocity.y = wall_jump_force * 1.2
+	
+func _gravity_to_state(delta:float) ->void:
+	if current_state == State.WALL_SLIDE:
+		velocity.y -= wall_slide_gravity * delta
+	elif not is_on_floor():
+		velocity.y -= gravity * delta
+
 func _throw_shuriken() -> void:
 	if not shuriken_scene:
 		return

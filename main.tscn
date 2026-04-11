@@ -29,6 +29,9 @@ albedo_color = Color(0.1148968, 0.11489681, 0.1148968, 1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_h2yge"]
 
+[sub_resource type="SphereShape3D" id="SphereShape3D_1bvp3"]
+radius = 0.6
+
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_0xm2m"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0xm2m"]
@@ -80,17 +83,9 @@ size = Vector3(16, 6, 2)
 operation = 2
 size = Vector3(3, 5, 3)
 
-[node name="CSGBox3D4" type="CSGBox3D" parent="nivel1" unique_id=1157046329]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5, 2.5, -12.6660385)
-size = Vector3(8, 6, 1)
-
 [node name="CSGBox3D5" type="CSGBox3D" parent="nivel1" unique_id=541826821]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.39869595, 2.5, 3.3171353)
 size = Vector3(17, 6, 1)
-
-[node name="CSGBox3D6" type="CSGBox3D" parent="nivel1" unique_id=957611968]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.0903378, 3, -16.03645)
-size = Vector3(1, 7, 5)
 
 [node name="CSGBox3D7" type="CSGBox3D" parent="nivel1" unique_id=1014380776]
 size = Vector3(16, 1, 6)
@@ -99,17 +94,23 @@ size = Vector3(16, 1, 6)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.539963, 2.5, -10.462902)
 size = Vector3(1, 6, 27)
 
-[node name="CSGBox3D9" type="CSGBox3D" parent="nivel1" unique_id=1459188900]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.046234, 1.6, -18)
+[node name="wall" type="CSGCombiner3D" parent="." unique_id=1418998309 groups=["wall_jump"]]
+use_collision = true
+
+[node name="CSGBox3D4" type="CSGBox3D" parent="wall" unique_id=1157046329]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5, 0.5, -12.6660385)
+size = Vector3(8, 6, 1)
+
+[node name="CSGBox3D6" type="CSGBox3D" parent="wall" unique_id=957611968]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.0903378, 1, -16.03645)
+size = Vector3(1, 7, 5)
+
+[node name="CSGBox3D9" type="CSGBox3D" parent="wall" unique_id=1459188900]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.046234, -0.39999998, -18)
 size = Vector3(8, 2, 1)
 
-[node name="techo" type="CSGBox3D" parent="nivel1" unique_id=480115875]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 5, -16)
-visible = false
-size = Vector3(16, 1, 25)
-
 [node name="Player" type="CharacterBody3D" parent="." unique_id=1040943630 node_paths=PackedStringArray("spawn_point", "camera") groups=["player"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.6566477, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.721612, 0, -14.640743)
 script = ExtResource("1_ig7tw")
 spawn_point = NodePath("../SpawnPoint")
 camera = NodePath("../Camera3D")
@@ -131,6 +132,9 @@ monitoring = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Player/AttackArea" unique_id=159826849]
 shape = SubResource("BoxShape3D_h2yge")
+
+[node name="ShapeCast3D" type="ShapeCast3D" parent="Player" unique_id=773697185]
+shape = SubResource("SphereShape3D_1bvp3")
 
 [node name="Enemy" type="CharacterBody3D" parent="." unique_id=1275947369 groups=["enemy"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -22.388931)
