@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://cnowqwynmeine"]
 
-[ext_resource type="Script" uid="uid://dpvscne4xjaho" path="res://shuriken.gd" id="1_foqx7"]
+[ext_resource type="Script" uid="uid://dpvscne4xjaho" path="res://entities/shuriken/shuriken.gd" id="1_foqx7"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_bd2gl"]
 radius = 0.15

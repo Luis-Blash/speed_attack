@@ -138,8 +138,6 @@ func _state_wall_slide() -> void:
 		current_state = State.IDLE
 
 func _state_attack(delta: float) -> void:
-	velocity.x = 0
-	velocity.z = 0
 	attack_timer -= delta
 	if attack_timer <= 0.0:
 		attack_area.monitoring = false

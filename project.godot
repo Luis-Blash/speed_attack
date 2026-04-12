@@ -19,12 +19,25 @@ config/icon="res://icon.svg"
 
 GameManager="*uid://c6pyqd4o26fvg"
 
+[file_customization]
+
+folder_colors={
+"res://entities/": "blue",
+"res://entities/enemy/": "red",
+"res://entities/player/": "green",
+"res://entities/shuriken/": "teal",
+"res://global/": "orange",
+"res://levels/": "yellow",
+"res://ui/": "pink"
+}
+
 [global_group]
 
 player=""
 enemy=""
 wall=""
 wall_jump=""
+wall_occlusion=""
 
 [input]
 

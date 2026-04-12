@@ -1,0 +1,56 @@
+[gd_scene format=3 uid="uid://cebf0q6b144vl"]
+
+[ext_resource type="Script" uid="uid://cn0tdoaet381v" path="res://entities/enemy/enemy.gd" id="1_ksmh7"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_0xm2m"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0xm2m"]
+albedo_color = Color(0.8283502, 0.10899695, 0.1412035, 1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_7dm0k"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_h2yge"]
+albedo_color = Color(0.7504365, 0.21343419, 0.10951956, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_ig7tw"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_0xm2m"]
+radius = 5.029
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_h2yge"]
+radius = 1.0
+
+[node name="Enemy" type="CharacterBody3D" unique_id=1678059731 groups=["enemy"]]
+script = ExtResource("1_ksmh7")
+
+[node name="CapsuleShape3D" type="CollisionShape3D" parent="." unique_id=970160562]
+shape = SubResource("CapsuleShape3D_0xm2m")
+
+[node name="CapsuleMesh" type="MeshInstance3D" parent="." unique_id=1841351332]
+material_overlay = SubResource("StandardMaterial3D_0xm2m")
+mesh = SubResource("CapsuleMesh_7dm0k")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="CapsuleMesh" unique_id=1055105107]
+transform = Transform3D(1, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0.36574686, -0.3936116)
+material_overlay = SubResource("StandardMaterial3D_h2yge")
+mesh = SubResource("BoxMesh_ig7tw")
+
+[node name="RayCast3D" type="RayCast3D" parent="." unique_id=527751510]
+target_position = Vector3(0, 0, -6)
+
+[node name="VisionArea" type="Area3D" parent="." unique_id=52970720]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -3)
+collision_layer = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="VisionArea" unique_id=1948553250]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.6487865)
+shape = SubResource("SphereShape3D_0xm2m")
+
+[node name="AttackArea" type="Area3D" parent="." unique_id=1813162914]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.1954556)
+collision_layer = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="AttackArea" unique_id=1780239666]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.12767792)
+shape = SubResource("SphereShape3D_h2yge")
+debug_color = Color(0.95130855, 0.22093806, 0.06852095, 0.41960785)

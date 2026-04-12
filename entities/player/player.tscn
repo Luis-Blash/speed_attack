@@ -1,0 +1,37 @@
+[gd_scene format=3 uid="uid://cg6tsm77q2gv8"]
+
+[ext_resource type="Script" uid="uid://cg7l0k4p70v2a" path="res://entities/player/player.gd" id="1_abrql"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_7dm0k"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_7dm0k"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_ig7tw"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_h2yge"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_1bvp3"]
+radius = 0.6
+
+[node name="Player" type="CharacterBody3D" unique_id=1066801161 groups=["player"]]
+script = ExtResource("1_abrql")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=2126156897]
+shape = SubResource("CapsuleShape3D_7dm0k")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1537585645]
+mesh = SubResource("CapsuleMesh_7dm0k")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="MeshInstance3D" unique_id=1416391884]
+transform = Transform3D(1, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0.36574686, -0.3936116)
+mesh = SubResource("BoxMesh_ig7tw")
+
+[node name="AttackArea" type="Area3D" parent="." unique_id=1752152791]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.0378367)
+monitoring = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="AttackArea" unique_id=2073783958]
+shape = SubResource("BoxShape3D_h2yge")
+
+[node name="ShapeCast3D" type="ShapeCast3D" parent="." unique_id=1233441116]
+shape = SubResource("SphereShape3D_1bvp3")
