@@ -107,4 +107,5 @@ func _on_attack_hit(body: Node3D) -> void:
 		body.die()
 
 func die() -> void:
+	GameManager.enemy_died()
 	queue_free()

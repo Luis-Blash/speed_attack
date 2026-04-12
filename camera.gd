@@ -27,6 +27,9 @@ func _unhandled_input(event: InputEvent) -> void:
 func _physics_process(delta: float) -> void:
 	if not target:
 		return
+		
+	if not GameManager.is_running:
+		return
 	
 	# rotación con stick derecho del control
 	var joy_x := Input.get_joy_axis(0, JOY_AXIS_RIGHT_X)

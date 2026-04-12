@@ -36,10 +36,13 @@ var attack_timer: float = 0.0
 @export var shuriken_scene: PackedScene
 
 func _ready() -> void:
+	global_position = spawn_point.global_position
 	attack_area.monitoring = false
 	attack_area.body_entered.connect(_on_attack_hit)
 
 func _physics_process(delta: float) -> void:
+	if not GameManager.is_running:
+		return
 	_check_walls()
 	_gravity_to_state(delta)
 	_update_timers(delta)
