@@ -82,8 +82,8 @@ func _handle_global_input() -> void:
 	if Input.is_action_just_pressed("throw"):
 		_throw_shuriken()
 		
-	if Input.is_action_just_pressed("dash") and dash_cooldown_timer <= 0.0:
-		_start_dash()
+	#if Input.is_action_just_pressed("dash") and dash_cooldown_timer <= 0.0:
+		#_start_dash()
 
 # --- estados ---
 func _state_idle() -> void:
