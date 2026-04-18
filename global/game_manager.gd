@@ -1,5 +1,7 @@
 extends Node
 
+signal level_complete
+
 # --- cronómetro ---
 var elapsed_time: float = 0.0
 var is_running: bool = true
@@ -31,7 +33,7 @@ func enemy_died() -> void:
 
 func _level_complete() -> void:
 	is_running = false
-	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+	level_complete.emit()
 	if time_label:
 		time_label.text = "Tiempo: " + _format_time(elapsed_time)
 	if rank_label:
@@ -57,7 +59,6 @@ func _format_time(time: float) -> String:
 func retry() -> void:
 	elapsed_time = 0.0
 	is_running = true
-	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	if color_rect:
 		color_rect.visible = false
 	get_tree().reload_current_scene()

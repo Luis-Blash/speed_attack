@@ -3,7 +3,7 @@ extends Camera3D
 @export var target: CharacterBody3D
 @export var offset: Vector3 = Vector3(0, 5, 6)
 @export var smoothness: float = 0.1
-@export var mouse_sensitivity: float = 0.3
+@export var mouse_sensitivity: float = 0.1
 @export var joy_sensitivity: float = 200.0
 
 var current_angle: float = 0.0
@@ -18,13 +18,14 @@ var _duplicated_materials: Dictionary = {}
 
 func _ready() -> void:
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	GameManager.level_complete.connect(_on_level_complete)
 
-func _unhandled_input(event: InputEvent) -> void:
-	# rotación con mouse
-	if event is InputEventMouseMotion:
-		current_angle -= event.relative.x * mouse_sensitivity
+func _on_level_complete() -> void:
+	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 	
-	# liberar/capturar mouse con Escape
+func _input(event: InputEvent) -> void:
+	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
+		current_angle -= event.relative.x * mouse_sensitivity
 	if event.is_action_pressed("ui_cancel"):
 		if Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
 			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
