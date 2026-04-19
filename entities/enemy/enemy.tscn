@@ -18,7 +18,8 @@ albedo_color = Color(0.7504365, 0.21343419, 0.10951956, 1)
 radius = 5.029
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_h2yge"]
-radius = 1.0
+
+[sub_resource type="SphereMesh" id="SphereMesh_ksmh7"]
 
 [node name="Enemy" type="CharacterBody3D" unique_id=1678059731 groups=["enemy"]]
 script = ExtResource("1_ksmh7")
@@ -51,6 +52,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.1954556)
 collision_layer = 0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="AttackArea" unique_id=1780239666]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.12767792)
 shape = SubResource("SphereShape3D_h2yge")
 debug_color = Color(0.95130855, 0.22093806, 0.06852095, 0.41960785)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="AttackArea" unique_id=357748567]
+mesh = SubResource("SphereMesh_ksmh7")

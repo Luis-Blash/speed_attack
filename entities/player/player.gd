@@ -1,7 +1,7 @@
 extends CharacterBody3D
 
 # --- configuración ---
-@export var speed: float = 11.0
+@export var speed: float = 16.0
 @export var gravity: float = 55.0
 @export var jump_force: float = 15.0
 
@@ -35,6 +35,7 @@ var attack_timer: float = 0.0
 
 # --- referencias ---
 @onready var attack_area: Area3D = $AttackArea
+@onready var attack_area_mesh: MeshInstance3D = $AttackArea/atackView
 @onready var shape_cast: ShapeCast3D = $ShapeCast3D
 @export var spawn_point: Marker3D
 @export var camera: Camera3D
@@ -43,6 +44,7 @@ var attack_timer: float = 0.0
 func _ready() -> void:
 	global_position = spawn_point.global_position
 	attack_area.monitoring = false
+	attack_area_mesh.visible = false
 	attack_area.body_entered.connect(_on_attack_hit)
 
 func _physics_process(delta: float) -> void:
@@ -95,6 +97,7 @@ func _start_attack() -> void:
 	is_attacking = true
 	attack_timer = attack_duration
 	attack_area.monitoring = true
+	attack_area_mesh.visible = true
 
 func _handle_attack(delta: float) -> void:
 	if not is_attacking:
@@ -103,6 +106,7 @@ func _handle_attack(delta: float) -> void:
 	if attack_timer <= 0.0:
 		is_attacking = false
 		attack_area.monitoring = false
+		attack_area_mesh.visible = false
 
 # --- estados ---
 func _state_idle() -> void:
