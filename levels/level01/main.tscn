@@ -4,7 +4,6 @@
 [ext_resource type="Script" uid="uid://dl44ir6fhdt7a" path="res://global/camera.gd" id="2_gv8vq"]
 [ext_resource type="PackedScene" uid="uid://cg6tsm77q2gv8" path="res://entities/player/player.tscn" id="3_e4yrb"]
 [ext_resource type="PackedScene" uid="uid://cnowqwynmeine" path="res://entities/shuriken/shuriken.tscn" id="4_efjqo"]
-[ext_resource type="PackedScene" uid="uid://cebf0q6b144vl" path="res://entities/enemy/enemy.tscn" id="4_pc1ii"]
 [ext_resource type="PackedScene" uid="uid://cjbe6fkxmbrnb" path="res://ui/hud.tscn" id="6_a416o"]
 [ext_resource type="PackedScene" uid="uid://gnf3364qafqa" path="res://ui/result.tscn" id="7_efjqo"]
 
@@ -21,9 +20,6 @@ sky = SubResource("Sky_ig7tw")
 tonemap_mode = 2
 glow_enabled = true
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lquwl"]
-albedo_color = Color(0.1148968, 0.11489681, 0.1148968, 1)
-
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_a416o"]
 albedo_color = Color(0.6568628, 0.9999998, 0.78527004, 1)
 
@@ -38,6 +34,9 @@ size = Vector3(16, 6, 1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_efjqo"]
 size = Vector3(16, 6, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_efjqo"]
+albedo_color = Color(0, 0, 0, 1)
 
 [node name="Main" type="Node3D" unique_id=931613299]
 script = ExtResource("1_pc1ii")
@@ -58,37 +57,108 @@ transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545
 shadow_enabled = true
 
 [node name="SpawnPoint" type="Marker3D" parent="." unique_id=236439115]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 7.959038)
 
-[node name="nivel1" type="CSGCombiner3D" parent="." unique_id=994892580 groups=["wall"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2, 0)
-material_overlay = SubResource("StandardMaterial3D_lquwl")
+[node name="paredes" type="Node3D" parent="." unique_id=1929784201]
+
+[node name="pared1" type="MeshInstance3D" parent="paredes" unique_id=1809998192 groups=["wall", "wall_occlusion"]]
+transform = Transform3D(1.6941612, 0, 0, 0, 0.72984487, 0, 0, 0, 1, -26.022207, 1.3080635, -3.6698642)
+material_override = SubResource("StandardMaterial3D_a416o")
+mesh = SubResource("BoxMesh_efjqo")
+
+[node name="pared1Static" type="StaticBody3D" parent="paredes/pared1" unique_id=1315580376]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="paredes/pared1/pared1Static" unique_id=276764444]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+shape = SubResource("BoxShape3D_a416o")
+
+[node name="pared8" type="MeshInstance3D" parent="paredes" unique_id=1031578549 groups=["wall", "wall_occlusion"]]
+transform = Transform3D(0.5381066, 0, 0, 0, 0.167878, 0, 0, 0, 8.243184, -31.90603, 3.2875085, 0.75740623)
+material_override = SubResource("StandardMaterial3D_a416o")
+mesh = SubResource("BoxMesh_efjqo")
+
+[node name="pared1Static" type="StaticBody3D" parent="paredes/pared8" unique_id=1629969953]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="paredes/pared8/pared1Static" unique_id=1770677422]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+shape = SubResource("BoxShape3D_a416o")
+
+[node name="pared7" type="MeshInstance3D" parent="paredes" unique_id=1603602320 groups=["wall", "wall_occlusion"]]
+transform = Transform3D(-5.1837898e-08, 0, -1.0000001, 0, 1.4637742, 0, 1.1859128, 0, -4.371139e-08, 8.153852, 2.5, 2.7405148)
+material_override = SubResource("StandardMaterial3D_a416o")
+mesh = SubResource("BoxMesh_efjqo")
+
+[node name="pared1Static" type="StaticBody3D" parent="paredes/pared7" unique_id=999233047]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="paredes/pared7/pared1Static" unique_id=1158952153]
+shape = SubResource("BoxShape3D_a416o")
+
+[node name="pared3" type="MeshInstance3D" parent="paredes" unique_id=2054553781 groups=["wall", "wall_occlusion"]]
+transform = Transform3D(3.5577383, 0, 0, 0, 1.4637742, 0, 0, 0, 1, 20.977793, 2.5, -3.6698642)
+material_override = SubResource("StandardMaterial3D_a416o")
+mesh = SubResource("BoxMesh_efjqo")
+
+[node name="pared1Static" type="StaticBody3D" parent="paredes/pared3" unique_id=816054353]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="paredes/pared3/pared1Static" unique_id=1596215849]
+shape = SubResource("BoxShape3D_a416o")
+
+[node name="pared2" type="MeshInstance3D" parent="paredes" unique_id=843431560 groups=["wall", "wall_occlusion"]]
+transform = Transform3D(4.712706, 0, 0, 0, 2.4, 0, 0, 0, 1, 1.9228659, 4.5, 16.357304)
+material_override = SubResource("StandardMaterial3D_a416o")
+mesh = SubResource("BoxMesh_a416o")
+
+[node name="pared2Static" type="StaticBody3D" parent="paredes/pared2" unique_id=1475177250]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="paredes/pared2/pared2Static" unique_id=648936666]
+shape = SubResource("BoxShape3D_efjqo")
+
+[node name="pared6" type="MeshInstance3D" parent="paredes" unique_id=474520108 groups=["wall", "wall_occlusion"]]
+transform = Transform3D(4.712706, 0, 0, 0, 2.4, 0, 0, 0, 1, 1.9228659, 4.5, -54.95219)
+material_override = SubResource("StandardMaterial3D_a416o")
+mesh = SubResource("BoxMesh_a416o")
+
+[node name="pared2Static" type="StaticBody3D" parent="paredes/pared6" unique_id=1688030434]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="paredes/pared6/pared2Static" unique_id=1443362138]
+shape = SubResource("BoxShape3D_efjqo")
+
+[node name="pared4" type="MeshInstance3D" parent="paredes" unique_id=1515895337 groups=["wall", "wall_occlusion"]]
+transform = Transform3D(-2.0599893e-07, 0, -1, 0, 2.4, 0, 4.712706, 0, -4.371139e-08, 38.922867, 4.5, -21.343674)
+material_override = SubResource("StandardMaterial3D_a416o")
+mesh = SubResource("BoxMesh_a416o")
+
+[node name="pared2Static" type="StaticBody3D" parent="paredes/pared4" unique_id=1161833835]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="paredes/pared4/pared2Static" unique_id=1334323512]
+shape = SubResource("BoxShape3D_efjqo")
+
+[node name="pared5" type="MeshInstance3D" parent="paredes" unique_id=699088362 groups=["wall", "wall_occlusion"]]
+transform = Transform3D(-2.0599893e-07, 0, -1, 0, 2.4, 0, 4.712706, 0, -4.371139e-08, -35.084328, 4.5, -21.343674)
+material_override = SubResource("StandardMaterial3D_a416o")
+mesh = SubResource("BoxMesh_a416o")
+
+[node name="pared2Static" type="StaticBody3D" parent="paredes/pared5" unique_id=1466918296]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="paredes/pared5/pared2Static" unique_id=132682162]
+shape = SubResource("BoxShape3D_efjqo")
+
+[node name="piso" type="CSGBox3D" parent="." unique_id=2040151556]
+transform = Transform3D(30, 0, 0, 0, 1, 0, 0, 0, 30, 1.7211914, -2, -19.719341)
 use_collision = true
-
-[node name="piso" type="CSGBox3D" parent="nivel1" unique_id=2040151556]
-transform = Transform3D(30, 0, 0, 0, 1, 0, 0, 0, 30, 0, 0, -17.904766)
-use_collision = true
-
-[node name="CSGBox3D2" type="CSGBox3D" parent="nivel1" unique_id=2092035016]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.460037, 2.5, -10.462902)
-size = Vector3(1, 6, 27)
-
-[node name="CSGBox3D7" type="CSGBox3D" parent="nivel1" unique_id=1014380776]
-size = Vector3(16, 1, 6)
-
-[node name="CSGBox3D8" type="CSGBox3D" parent="nivel1" unique_id=1452367929]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.539963, 2.5, -10.462902)
-size = Vector3(1, 6, 27)
+size = Vector3(2.5004883, 1, 2.3985596)
+material = SubResource("StandardMaterial3D_efjqo")
 
 [node name="wall" type="CSGCombiner3D" parent="." unique_id=1418998309 groups=["wall_jump"]]
 use_collision = true
 
 [node name="CSGBox3D4" type="CSGBox3D" parent="wall" unique_id=1157046329]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5, 0.5, -12.6660385)
-size = Vector3(8, 6, 1)
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -31.871874, 0.5, 0.85010815)
+size = Vector3(8, 6, 5.345703)
 
 [node name="CSGBox3D6" type="CSGBox3D" parent="wall" unique_id=957611968]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.0903378, 1, -16.03645)
-size = Vector3(1, 7, 5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20.44201, 1, 3.5113535)
+size = Vector3(1, 7, 13.752808)
 
 [node name="CSGBox3D9" type="CSGBox3D" parent="wall" unique_id=1459188900]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.046234, -0.39999998, -18)
@@ -99,43 +169,8 @@ spawn_point = NodePath("../SpawnPoint")
 camera = NodePath("../Camera3D")
 shuriken_scene = ExtResource("4_efjqo")
 
-[node name="Enemy" parent="." unique_id=1678059731 instance=ExtResource("4_pc1ii")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -22.388931)
-
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1963672047]
 
 [node name="VBoxContainer" parent="CanvasLayer" unique_id=226300287 instance=ExtResource("6_a416o")]
 
 [node name="Control" parent="CanvasLayer" unique_id=599128272 instance=ExtResource("7_efjqo")]
-
-[node name="paredes" type="Node3D" parent="." unique_id=1929784201]
-
-[node name="pared1" type="MeshInstance3D" parent="paredes" unique_id=1809998192 groups=["wall", "wall_occlusion"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.47790718, 0.5, -3.6698642)
-material_override = SubResource("StandardMaterial3D_a416o")
-mesh = SubResource("BoxMesh_efjqo")
-
-[node name="pared1Static" type="StaticBody3D" parent="paredes/pared1" unique_id=1315580376]
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="paredes/pared1/pared1Static" unique_id=276764444]
-shape = SubResource("BoxShape3D_a416o")
-
-[node name="pared3" type="MeshInstance3D" parent="paredes" unique_id=1601315900 groups=["wall", "wall_occlusion"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5598187, 0.5, -7.052161)
-material_override = SubResource("StandardMaterial3D_a416o")
-mesh = SubResource("BoxMesh_efjqo")
-
-[node name="pared1Static" type="StaticBody3D" parent="paredes/pared3" unique_id=914355545]
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="paredes/pared3/pared1Static" unique_id=13595505]
-shape = SubResource("BoxShape3D_a416o")
-
-[node name="pared2" type="MeshInstance3D" parent="paredes" unique_id=843431560 groups=["wall", "wall_occlusion"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.39869595, 0.5, 3.3171353)
-material_override = SubResource("StandardMaterial3D_a416o")
-mesh = SubResource("BoxMesh_a416o")
-
-[node name="pared2Static" type="StaticBody3D" parent="paredes/pared2" unique_id=1475177250]
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="paredes/pared2/pared2Static" unique_id=648936666]
-shape = SubResource("BoxShape3D_efjqo")

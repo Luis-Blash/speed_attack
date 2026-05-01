@@ -9,7 +9,7 @@ extends CharacterBody3D
 @export var wall_stick_duration: float = 0.5
 @export var wall_jump_force: float = 12.0
 @export var wall_slide_gravity: float = 2.0
-@export var wall_cooldown_duration: float = 0.8
+@export var wall_cooldown_duration: float = 0.5
 var wall_normal: Vector3 = Vector3.ZERO
 var is_on_wall: bool = false
 var can_wall_slide: bool = true
@@ -33,6 +33,12 @@ var current_state: State = State.IDLE
 var is_attacking: bool = false
 var attack_timer: float = 0.0
 
+# --- coyote ---
+@export var coyote_time: float = 0.12
+var coyote_timer: float = 0.0
+var was_on_floor: bool = false
+var used_coyote: bool = false
+
 # --- referencias ---
 @onready var attack_area: Area3D = $AttackArea
 @onready var attack_area_mesh: MeshInstance3D = $AttackArea/atackView
@@ -50,14 +56,15 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	if not GameManager.is_running:
 		return
+		
+	was_on_floor = is_on_floor()
+	
 	_check_walls()
 	_gravity_to_state(delta)
 	_update_timers(delta)
 	_handle_global_input()
 	_handle_attack(delta)
-	
-	print("state: ", State.keys()[current_state], " | is_on_wall: ", is_on_wall, " | can_wall_slide: ", can_wall_slide, " | wall_cooldown: ", wall_cooldown_timer)
-	
+
 	match current_state:
 		State.IDLE:
 			_state_idle()
@@ -69,25 +76,30 @@ func _physics_process(delta: float) -> void:
 			_state_dash(delta)
 		State.DEAD:
 			_state_dead()
-	
+
 	move_and_slide()
+
+	# ← CRÍTICO: se actualiza DESPUÉS de move_and_slide para capturar estado real
+	was_on_floor = is_on_floor()
 
 func _handle_global_input() -> void:
 	if current_state == State.DEAD:
 		return
-	
-	if Input.is_action_just_pressed("jump") and is_on_floor():
+
+	if Input.is_action_just_pressed("jump") and (is_on_floor() or coyote_timer > 0.0):
 		velocity.y = jump_force
-	
+		coyote_timer = 0.0
+		used_coyote = true
+
 	if Input.is_action_just_pressed("jump") and current_state == State.WALL_SLIDE:
 		_wall_jump()
-	
+
 	if Input.is_action_just_pressed("attack_1"):
 		_start_attack()
-	
+
 	if Input.is_action_just_pressed("throw"):
 		_throw_shuriken()
-		
+
 	if Input.is_action_just_pressed("dash") and dash_cooldown_timer <= 0.0:
 		_start_dash()
 
@@ -121,41 +133,41 @@ func _state_move() -> void:
 	var direction := get_input_direction()
 	velocity.x = direction.x * speed
 	velocity.z = direction.z * speed
-	
+
 	if direction.length() > 0.1:
 		var target_angle := atan2(-direction.x, -direction.z)
 		rotation.y = lerp_angle(rotation.y, target_angle, 0.15)
-	
+
 	if direction.length() < 0.1:
 		current_state = State.IDLE
-	
+
 	if is_on_wall and not is_on_floor():
 		current_state = State.WALL_SLIDE
 
 func _state_wall_slide() -> void:
 	velocity.x = 0
 	velocity.z = 0
-	
+
 	if velocity.y > 0:
 		velocity.y = 0
-	
+
 	var input_dir := get_input_direction()
 	input_dir.y = 0
-	
+
 	var look_dir: Vector3
 	if input_dir.length() > 0.1:
 		look_dir = input_dir
 	else:
 		look_dir = -wall_normal
 		look_dir.y = 0
-	
+
 	if look_dir.length() > 0.1:
 		var target_angle := atan2(-look_dir.x, -look_dir.z)
 		rotation.y = lerp_angle(rotation.y, target_angle, 0.2)
-	
+
 	if is_on_floor():
 		current_state = State.IDLE
-	
+
 	if not is_on_wall:
 		wall_cooldown_timer = wall_cooldown_duration
 		current_state = State.IDLE
@@ -174,7 +186,7 @@ func _state_dash(delta: float) -> void:
 	velocity.x = dash_direction.x * dash_force
 	velocity.z = dash_direction.z * dash_force
 	velocity.y = 0.0
-	
+
 	if dash_timer <= 0.0:
 		current_state = State.IDLE
 
@@ -185,7 +197,16 @@ func _update_timers(delta: float) -> void:
 		wall_cooldown_timer -= delta
 		if wall_cooldown_timer <= 0.0:
 			wall_cooldown_timer = 0.0
-			can_wall_slide = true  # ← aquí se recupera
+			can_wall_slide = true
+
+	# coyote time
+	if is_on_floor():
+		coyote_timer = coyote_time
+		used_coyote = false
+	elif coyote_timer > 0.0 and not used_coyote:
+		coyote_timer -= delta
+		if coyote_timer < 0.0:
+			coyote_timer = 0.0
 
 func _state_dead() -> void:
 	velocity.x = 0
@@ -195,13 +216,13 @@ func get_input_direction() -> Vector3:
 	var input := Vector2.ZERO
 	input.x = Input.get_axis("move_left", "move_right")
 	input.y = Input.get_axis("move_up", "move_down")
-	
+
 	if input.length() > 1.0:
 		input = input.normalized()
-	
+
 	if not camera:
 		return Vector3(input.x, 0, input.y)
-	
+
 	var angle := deg_to_rad(-camera.current_angle_deg)
 	return Vector3(
 		input.x * cos(angle) + input.y * sin(angle),
@@ -213,25 +234,24 @@ func _check_walls() -> void:
 	var previously_on_wall := is_on_wall
 	is_on_wall = false
 	wall_normal = Vector3.ZERO
-	
+
 	if is_on_floor():
 		can_wall_slide = true
-		wall_cooldown_timer = 0.0  # pisas el suelo → resetea todo
+		wall_cooldown_timer = 0.0
 		return
-	
-	# si el cooldown está activo, no puede pegarse a ninguna pared
+
 	if wall_cooldown_timer > 0.0:
 		return
-		
+
 	if not can_wall_slide:
 		return
-	
+
 	for i in shape_cast.get_collision_count():
 		var collider = shape_cast.get_collider(i)
 		if collider.is_in_group("wall_jump"):
 			wall_normal += shape_cast.get_collision_normal(i)
 			is_on_wall = true
-	
+
 	if is_on_wall and not previously_on_wall:
 		wall_stick_timer = wall_stick_duration
 
@@ -240,12 +260,12 @@ func _wall_jump() -> void:
 	input_dir.y = 0
 	var toward_wall := input_dir.dot(-wall_normal)
 	var jump_dir := input_dir - (-wall_normal * toward_wall)
-	
+
 	can_wall_slide = false
 	is_on_wall = false
-	wall_cooldown_timer = wall_cooldown_duration  # wall jump también activa el cooldown
+	wall_cooldown_timer = wall_cooldown_duration
 	current_state = State.MOVE
-	
+
 	if jump_dir.length() > 0.1:
 		jump_dir = jump_dir.normalized()
 		velocity.x = jump_dir.x * wall_jump_force
@@ -255,7 +275,7 @@ func _wall_jump() -> void:
 		velocity.x = wall_normal.x * 8.0
 		velocity.z = wall_normal.z * 8.0
 		velocity.y = wall_jump_force * 1.2
-	
+
 func _gravity_to_state(delta: float) -> void:
 	if current_state == State.WALL_SLIDE:
 		if wall_stick_timer > 0.0:

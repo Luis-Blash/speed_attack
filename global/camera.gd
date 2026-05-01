@@ -1,7 +1,7 @@
 extends Camera3D
 
 @export var target: CharacterBody3D
-@export var offset: Vector3 = Vector3(0, 5, 6)
+@export var offset: Vector3 = Vector3(0, 4, 6)
 @export var smoothness: float = 0.1
 @export var mouse_sensitivity: float = 0.1
 @export var joy_sensitivity: float = 200.0
