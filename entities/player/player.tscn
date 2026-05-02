@@ -1,6 +1,14 @@
 [gd_scene format=3 uid="uid://cg6tsm77q2gv8"]
 
-[ext_resource type="Script" uid="uid://cg7l0k4p70v2a" path="res://entities/player/player.gd" id="1_abrql"]
+[ext_resource type="Script" uid="uid://o523vakawkpr" path="res://entities/player/player.gd" id="1_abrql"]
+[ext_resource type="Script" uid="uid://yj0uuawrjodh" path="res://entities/player/components/movement_component.gd" id="2_abrql"]
+[ext_resource type="Script" uid="uid://ch7kql5twefvr" path="res://entities/player/components/jump_component.gd" id="3_bls4j"]
+[ext_resource type="Script" uid="uid://ci0ocl4durynj" path="res://entities/player/helpers/coyote_helper.gd" id="4_fkugw"]
+[ext_resource type="Script" uid="uid://drlgp06cuv4tn" path="res://entities/player/components/dash_component.gd" id="5_fkugw"]
+[ext_resource type="Script" uid="uid://cdlul07ebikvm" path="res://entities/player/components/wall_slide_component.gd" id="6_8fjmc"]
+[ext_resource type="Script" uid="uid://cbtbu62pgrmup" path="res://entities/player/components/throw_component.gd" id="7_26q78"]
+[ext_resource type="Script" uid="uid://debc637pb6fih" path="res://entities/player/components/attack_component.gd" id="7_qiwj3"]
+[ext_resource type="PackedScene" uid="uid://cnowqwynmeine" path="res://entities/shuriken/shuriken.tscn" id="8_bectd"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_7dm0k"]
 
@@ -8,15 +16,15 @@
 
 [sub_resource type="BoxMesh" id="BoxMesh_ig7tw"]
 
+[sub_resource type="SphereShape3D" id="SphereShape3D_1bvp3"]
+radius = 0.6
+
 [sub_resource type="BoxShape3D" id="BoxShape3D_h2yge"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_symyc"]
 albedo_color = Color(0.87644494, 0.946613, 1.540184e-06, 1)
 
 [sub_resource type="SphereMesh" id="SphereMesh_symyc"]
-
-[sub_resource type="SphereShape3D" id="SphereShape3D_1bvp3"]
-radius = 0.6
 
 [node name="Player" type="CharacterBody3D" unique_id=1066801161 groups=["player"]]
 script = ExtResource("1_abrql")
@@ -31,17 +39,39 @@ mesh = SubResource("CapsuleMesh_7dm0k")
 transform = Transform3D(1, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0.36574686, -0.3936116)
 mesh = SubResource("BoxMesh_ig7tw")
 
-[node name="AttackArea" type="Area3D" parent="." unique_id=1752152791]
+[node name="ShapeCast3D" type="ShapeCast3D" parent="." unique_id=1233441116]
+shape = SubResource("SphereShape3D_1bvp3")
+
+[node name="MovementComponent" type="Node" parent="." unique_id=438773665]
+script = ExtResource("2_abrql")
+
+[node name="JumpComponent" type="Node" parent="." unique_id=1526136992]
+script = ExtResource("3_bls4j")
+
+[node name="CoyoteHelper" type="Node" parent="." unique_id=1245631295]
+script = ExtResource("4_fkugw")
+
+[node name="DashComponent" type="Node" parent="." unique_id=2025284026]
+script = ExtResource("5_fkugw")
+
+[node name="WallSlideComponent" type="Node" parent="." unique_id=1051460641]
+script = ExtResource("6_8fjmc")
+
+[node name="ThrowComponent" type="Node" parent="." unique_id=1114658234]
+script = ExtResource("7_26q78")
+shuriken_scene = ExtResource("8_bectd")
+
+[node name="AttackComponent" type="Node3D" parent="." unique_id=569957051]
+script = ExtResource("7_qiwj3")
+
+[node name="Area3D" type="Area3D" parent="AttackComponent" unique_id=1752152791]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.0378367)
 monitoring = false
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="AttackArea" unique_id=2073783958]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="AttackComponent/Area3D" unique_id=2073783958]
 shape = SubResource("BoxShape3D_h2yge")
 
-[node name="atackView" type="MeshInstance3D" parent="AttackArea" unique_id=1681863234]
+[node name="atacView" type="MeshInstance3D" parent="AttackComponent/Area3D" unique_id=1681863234]
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, -0.05669701)
 material_override = SubResource("StandardMaterial3D_symyc")
 mesh = SubResource("SphereMesh_symyc")
-
-[node name="ShapeCast3D" type="ShapeCast3D" parent="." unique_id=1233441116]
-shape = SubResource("SphereShape3D_1bvp3")

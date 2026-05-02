@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://u5vklosxo5ig" path="res://levels/level01/main.gd" id="1_pc1ii"]
 [ext_resource type="Script" uid="uid://dl44ir6fhdt7a" path="res://global/camera.gd" id="2_gv8vq"]
 [ext_resource type="PackedScene" uid="uid://cg6tsm77q2gv8" path="res://entities/player/player.tscn" id="3_e4yrb"]
-[ext_resource type="PackedScene" uid="uid://cnowqwynmeine" path="res://entities/shuriken/shuriken.tscn" id="4_efjqo"]
+[ext_resource type="PackedScene" uid="uid://cebf0q6b144vl" path="res://entities/enemy/enemy.tscn" id="4_gv8vq"]
 [ext_resource type="PackedScene" uid="uid://cjbe6fkxmbrnb" path="res://ui/hud.tscn" id="6_a416o"]
 [ext_resource type="PackedScene" uid="uid://gnf3364qafqa" path="res://ui/result.tscn" id="7_efjqo"]
 
@@ -62,7 +62,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 7.959038)
 [node name="paredes" type="Node3D" parent="." unique_id=1929784201]
 
 [node name="pared1" type="MeshInstance3D" parent="paredes" unique_id=1809998192 groups=["wall", "wall_occlusion"]]
-transform = Transform3D(1.6941612, 0, 0, 0, 0.72984487, 0, 0, 0, 1, -26.022207, 1.3080635, -3.6698642)
+transform = Transform3D(1.6941612, 0, 0, 0, 0.47459278, 0, 0, 0, 2.4121227, -7.616062, -1.0689192, -3.6698642)
 material_override = SubResource("StandardMaterial3D_a416o")
 mesh = SubResource("BoxMesh_efjqo")
 
@@ -164,10 +164,10 @@ size = Vector3(1, 7, 13.752808)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.046234, -0.39999998, -18)
 size = Vector3(8, 2, 1)
 
-[node name="Player" parent="." unique_id=1066801161 node_paths=PackedStringArray("spawn_point", "camera") instance=ExtResource("3_e4yrb")]
-spawn_point = NodePath("../SpawnPoint")
-camera = NodePath("../Camera3D")
-shuriken_scene = ExtResource("4_efjqo")
+[node name="Player" parent="." unique_id=1066801161 instance=ExtResource("3_e4yrb")]
+
+[node name="Enemy" parent="." unique_id=1678059731 instance=ExtResource("4_gv8vq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.797888, 0, -21.185305)
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1963672047]
 
